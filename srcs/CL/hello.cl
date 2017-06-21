@@ -1,5 +1,6 @@
 __kernel void core(__global char* string)
 {
+	ft_printf("hi\n");
 	string[0] = 'H';
 	string[1] = 'e';
 	string[2] = 'l';

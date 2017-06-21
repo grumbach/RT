@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/21 11:57:10 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/21 17:08:46 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@
 # include <time.h>//
 # include <errno.h>
 
+# define WIN_H				1024
+# define WIN_W				640
+
 /*
 ** ********************************** OpenCL ***********************************
 */
@@ -37,14 +40,15 @@
 # define CL_FILENAME		"srcs/CL/hello.cl"
 # define MAX_KERNEL_ARGS	5
 
-typedef struct			s_cl_arg
+typedef struct			s_arg
 {
-	void				*arg;
+	void				*ptr;
 	size_t				size;
-}						t_cl_arg;
+}						t_arg;
 
 typedef struct			s_cl
 {
+	size_t				work_size;
 	cl_context			context;
 	cl_command_queue	command_queue;
 	cl_program			program;
@@ -67,8 +71,6 @@ void		cl_end(t_cl *cl);
 /*
 ** ********************************** RT ***************************************
 */
-
-# define MEM_SIZE			(128)
 
 long		errors(const int err, const char *comment);
 

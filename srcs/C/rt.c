@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/21 05:39:03 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/21 15:19:14 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,17 @@ int			main(void)
 	t_cl	cl;
 	char	str[1000];//
 
+	str[0] = 'H';
+	str[1] = 'e';
+	str[2] = 'l';
+	str[3] = 'l';
+	str[4] = '\0';
+
 	ft_bzero(&cl, sizeof(cl));
 	cl_init(&cl);
 
 
-	cl_start(&cl, "core", 1, &str);
+	cl_start(&cl, "core", 1, (t_arg){&str, 1000});
 
 	puts(str);//
 
