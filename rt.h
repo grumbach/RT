@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 07:34:24 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 07:57:06 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 
 # define MAX_SOURCE_SIZE	(0x100000)
 # define CL_FILENAME		"srcs/CL/hello.cl"
+# define CL_CC_FLAGS		"-I srcs/CL -cl-mad-enable -cl-fast-relaxed-math"
 # define MAX_KERNEL_ARGS	5
 
 typedef struct			s_arg

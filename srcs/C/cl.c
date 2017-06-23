@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 07:47:59 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 08:21:23 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void		cl_init(t_cl *cl)
 	cl->program = clCreateProgramWithSource(cl->context, 1, \
 		(const char **)&source_str_ptr, (const size_t *)&source_size, &ret);
 	ret ? errors(1, "clCreateProgramWithSource failure --") : 0;
-	if (clBuildProgram(cl->program, 1, &device_id, NULL, NULL, NULL))
+	if (clBuildProgram(cl->program, 1, &device_id, CL_CC_FLAGS, NULL, NULL))
 		errors(1, "clBuildProgram failure --");
 	cl->work_size = WIN_H * WIN_W;
 }
@@ -49,11 +49,11 @@ void		cl_start(t_cl *cl, const char *kernel_name, const int nb_args, ...)
 
 	if (!nb_args || nb_args > MAX_KERNEL_ARGS)
 		errors(1, "cl_start: bad nb_args --");
-	va_start(ap, nb_args);
 	i = 0;
+	va_start(ap, nb_args);
 	while (i < nb_args)
 		arg[i] = va_arg(ap, t_arg);
-
+	va_end(ap);
 
 	cl->kernel = clCreateKernel(cl->program, kernel_name, &ret);
 	ret ? errors(1, "clCreateKernel failure --") : 0;
@@ -95,9 +95,6 @@ void		cl_start(t_cl *cl, const char *kernel_name, const int nb_args, ...)
 			arg[i].size ,arg[i].ptr, 0, NULL, NULL);
 		i++;
 	}
-
-
-	va_end(ap);
 }
 
 void		cl_end(t_cl *cl)

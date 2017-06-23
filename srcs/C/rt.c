@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/21 15:19:14 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 08:25:34 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ long		errors(const int err, const char *comment)
 int			main(void)
 {
 	t_cl	cl;
-	char	str[1000];//
+	char	str[24];//
 
 	str[0] = 'H';
 	str[1] = 'e';
@@ -43,7 +43,7 @@ int			main(void)
 	cl_init(&cl);
 
 
-	cl_start(&cl, "core", 1, (t_arg){&str, 1000});
+	cl_start(&cl, "core", 1, (t_arg){(void*)str, (size_t)24});
 
 	puts(str);//
 
