@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 08:25:34 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 10:33:45 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int			main(void)
 	cl_init(&cl);
 
 
-	cl_start(&cl, "core", 1, (t_arg){(void*)str, (size_t)24});
+	cl_start(&cl, "core", 1, (t_arg){&str, 24});
 
 	puts(str);//
 
