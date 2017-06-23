@@ -6,17 +6,17 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 11:32:18 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 15:07:11 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-void		cl_init(t_cl *cl)
+void				cl_init(t_cl *cl)
 {
-	cl_device_id 		device_id;
+	cl_device_id		device_id;
 	cl_int				ret;
-	ssize_t 			source_size;
+	ssize_t				source_size;
 	char				source_str[MAX_SOURCE_SIZE];
 	const char			*source_str_ptr = source_str;
 
@@ -59,11 +59,12 @@ static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 			errors(1, "clEnqueueWriteBuffer failure --");
 	i = -1;
 	while (++i < nb_arg)
-		if (clSetKernelArg(cl->kernel, i, arg[i].size, cl->variables[i]))
+		if ((ret = clSetKernelArg(cl->kernel, i, 8, &cl->variables[i])))
 			errors(1, "clSetKernelArg failure --");
 }
 
-void		cl_start(t_cl *cl, const char *kernel_name, const int nb_arg, ...)
+void				cl_start(t_cl *cl, const char *kernel_name, \
+					const int nb_arg, ...)
 {
 	cl_int		ret;
 	t_arg		arg[MAX_KERNEL_ARGS];
@@ -80,19 +81,19 @@ void		cl_start(t_cl *cl, const char *kernel_name, const int nb_arg, ...)
 	cl->kernel = clCreateKernel(cl->program, kernel_name, &ret);
 	ret ? errors(1, "clCreateKernel failure --") : 0;
 	cl_start_args(cl, arg, nb_arg);
-	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, 2, NULL, \
+	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, 1, NULL, \
 		&cl->work_size, NULL, 0, NULL, NULL))
 		errors(1, "clEnqueueNDRangeKernel failure --");
 	if (clFinish(cl->command_queue))
 		errors(1, "clFinish failure --");
 	i = -1;
-	while (i < nb_arg)
+	while (++i < nb_arg)
 		if (clEnqueueReadBuffer(cl->command_queue, cl->variables[i], \
-			CL_TRUE, 0, arg[i].size ,arg[i].ptr, 0, NULL, NULL))
+			CL_TRUE, 0, arg[i].size, arg[i].ptr, 0, NULL, NULL))
 			errors(1, "clEnqueueReadBuffer failure --");
 }
 
-void		cl_end(t_cl *cl)
+void				cl_end(t_cl *cl)
 {
 	int			i;
 

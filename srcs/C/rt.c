@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 10:33:45 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 15:07:33 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,10 @@ int			main(void)
 	str[2] = 'l';
 	str[3] = 'l';
 	str[4] = '\0';
-
 	ft_bzero(&cl, sizeof(cl));
 	cl_init(&cl);
-
-
 	cl_start(&cl, "core", 1, (t_arg){&str, 24});
-
 	puts(str);//
-
 	cl_end(&cl);
 	return (0);
 }
