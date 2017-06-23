@@ -3,3 +3,4 @@ CoffeeCup
 *.a
 .D*
 *.dSYM
+libft

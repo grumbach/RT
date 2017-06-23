@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/21 17:08:46 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 07:34:24 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct			s_cl
 	cl_command_queue	command_queue;
 	cl_program			program;
 	cl_kernel			kernel;
-	cl_mem				memobj[MAX_KERNEL_ARGS + 1];
+	cl_mem				variables[MAX_KERNEL_ARGS + 1];
 }						t_cl;
 
 void		cl_init(t_cl *cl);
