@@ -1,12 +1,5 @@
-int		toto()
-{
-	int	i = 0;
-	return (i++);
-}
-
 __kernel void core(__global char* string)
 {
-	printf("%d-", toto());
 	string[0] = 'H';
 	string[1] = 'e';
 	string[2] = 'l';

@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 15:07:11 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/23 17:42:03 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 	i = -1;
 	while (++i < nb_arg)
 	{
-		cl->variables[i] = clCreateBuffer(cl->context, CL_MEM_READ_WRITE, \
+		cl->variables[i] = clCreateBuffer(cl->context, ARGS_FLAGS, \
 			arg[i].size, NULL, &ret);
 		ret ? errors(1, "clCreateBuffer failure --") : 0;
 	}
