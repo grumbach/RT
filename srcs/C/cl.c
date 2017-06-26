@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/26 23:54:15 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/27 00:17:53 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,15 @@ static void			cl_error_log(t_cl *cl, const cl_int error_code)
 	ft_putendl_fd(log, 2);
 }
 
-void				cl_init(t_cl *cl)
+void				cl_init(t_cl *cl, const char *kernel_name)
 {
 	cl_int				ret;
 	ssize_t				source_size;
 	char				source_str[MAX_SOURCE_SIZE];
 	const char			*source_str_ptr = source_str;
 
-	if ((ret = open(CL_FILENAME, O_RDONLY)) == -1)
-		errors(0, 0);
-	if ((source_size = read(ret, &source_str, MAX_SOURCE_SIZE)) == -1)
+	if ((ret = open(CL_FILENAME, O_RDONLY)) == -1) ||
+		(source_size = read(ret, &source_str, MAX_SOURCE_SIZE)) == -1)
 		errors(0, 0);
 	close(ret);
 	if (clGetDeviceIDs(NULL, CL_DEVICE, 1, &cl->device_id, NULL))
@@ -50,6 +49,8 @@ void				cl_init(t_cl *cl)
 	ret = clBuildProgram(cl->program, 1, &cl->device_id, CL_CC_FLAGS, 0, 0);
 	ret ? cl_error_log(cl, ret) : 0;
 	ret ? errors(1, "clBuildProgram failure --") : 0;
+	cl->kernel = clCreateKernel(cl->program, kernel_name, &ret);
+	ret ? errors(1, "clCreateKernel failure --") : 0;
 	cl->work_size = DEFAULT_THREADS;
 }
 
@@ -76,8 +77,7 @@ static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 			errors(1, "clSetKernelArg failure --");
 }
 
-void				cl_start(t_cl *cl, const char *kernel_name, \
-					const int nb_arg, ...)
+void				cl_start(t_cl *cl, const int nb_arg, ...)
 {
 	cl_int		ret;
 	t_arg		arg[MAX_KERNEL_ARGS];
@@ -91,8 +91,6 @@ void				cl_start(t_cl *cl, const char *kernel_name, \
 	while (++i < nb_arg)
 		arg[i] = va_arg(ap, t_arg);
 	va_end(ap);
-	cl->kernel = clCreateKernel(cl->program, kernel_name, &ret);
-	ret ? errors(1, "clCreateKernel failure --") : 0;
 	cl_start_args(cl, arg, nb_arg);
 	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, 1, NULL, \
 		&cl->work_size, NULL, 0, NULL, NULL))

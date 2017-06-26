@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/26 23:51:35 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/27 00:15:01 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ typedef struct			s_cl
 	cl_mem				variables[MAX_KERNEL_ARGS + 1];
 }						t_cl;
 
-void		cl_init(t_cl *cl);
-void		cl_start(t_cl *cl, const char *kernel_name, const int nb_arg, ...);
+void		cl_init(t_cl *cl, const char *kernel_name);
+void		cl_start(t_cl *cl, const int nb_arg, ...);
 void		cl_end(t_cl *cl);
 
 /*
