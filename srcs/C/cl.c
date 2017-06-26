@@ -6,38 +6,51 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 17:42:03 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/26 23:54:15 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
+static void			cl_error_log(t_cl *cl, const cl_int error_code)
+{
+	char		log[MAX_ERR_LOG];
+
+	ft_bzero(&log, sizeof(log));
+	ft_putstr_fd("error code : ", 2);
+	ft_putnbr_fd(error_code, 2);
+	ft_putstr_fd("\n", 2);
+	clGetProgramBuildInfo(cl->program, cl->device_id, \
+		CL_PROGRAM_BUILD_LOG, MAX_ERR_LOG, &log, NULL);
+	ft_putendl_fd(log, 2);
+}
+
 void				cl_init(t_cl *cl)
 {
-	cl_device_id		device_id;
 	cl_int				ret;
 	ssize_t				source_size;
 	char				source_str[MAX_SOURCE_SIZE];
 	const char			*source_str_ptr = source_str;
 
-	device_id = NULL;
 	if ((ret = open(CL_FILENAME, O_RDONLY)) == -1)
 		errors(0, 0);
 	if ((source_size = read(ret, &source_str, MAX_SOURCE_SIZE)) == -1)
 		errors(0, 0);
 	close(ret);
-	if (clGetDeviceIDs(NULL, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL))
+	if (clGetDeviceIDs(NULL, CL_DEVICE, 1, &cl->device_id, NULL))
 		errors(1, "clGetDeviceIDs failure --");
-	cl->context = clCreateContext(0, 1, &device_id, NULL, NULL, &ret);
+	cl->context = clCreateContext(0, 1, &cl->device_id, NULL, NULL, &ret);
 	ret ? errors(1, "clCreateContext failure --") : 0;
-	cl->command_queue = clCreateCommandQueue(cl->context, device_id, 0, &ret);
+	cl->command_queue = \
+		clCreateCommandQueue(cl->context, cl->device_id, 0, &ret);
 	ret ? errors(1, "clCreateCommandQueue failure --") : 0;
 	cl->program = clCreateProgramWithSource(cl->context, 1, \
 		(const char **)&source_str_ptr, (const size_t *)&source_size, &ret);
 	ret ? errors(1, "clCreateProgramWithSource failure --") : 0;
-	if (clBuildProgram(cl->program, 1, &device_id, CL_CC_FLAGS, NULL, NULL))
-		errors(1, "clBuildProgram failure --");
-	cl->work_size = WIN_H * WIN_W;
+	ret = clBuildProgram(cl->program, 1, &cl->device_id, CL_CC_FLAGS, 0, 0);
+	ret ? cl_error_log(cl, ret) : 0;
+	ret ? errors(1, "clBuildProgram failure --") : 0;
+	cl->work_size = DEFAULT_THREADS;
 }
 
 static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)

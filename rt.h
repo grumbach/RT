@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/23 18:16:44 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/26 23:51:35 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 
 # include <math.h>
 # include <fcntl.h>
-# include <stdio.h>//
-# include <time.h>//
 # include <errno.h>
 
 # define WIN_H				1024
@@ -33,6 +31,7 @@
 /*
 ** ********************************** OpenCL ***********************************
 ** MAX_SOURCE_SIZE	max size in bytes of [.cl file]
+** MAX_ERR_LOG		max size in bytes of error log
 ** CL_FILENAME		relative path to [.cl file] containing __kernel func
 ** CL_CC_FLAGS		[.cl file] compilation flags (can be NULL)
 ** MAX_KERNEL_ARGS	max numbers of args passed to __kernel func
@@ -40,7 +39,13 @@
 ** 		CL_MEM_READ_WRITE
 ** 		CL_MEM_WRITE_ONLY	//not implemented yet
 ** 		CL_MEM_READ_ONLY	//not implemented yet
+** CL_DEVICE		device used
+**		CL_DEVICE_TYPE_GPU
+** 		CL_DEVICE_TYPE_CPU
+** 		CL_DEVICE_TYPE_ALL
+** DEFAULT_THREADS	default number of threads, pixel grid
 **
+** ********************************** functions ********************************
 ** void	cl_init(t_cl *cl);
 ** 					initialize cl program
 ** void	cl_start(t_cl *cl, const char *kernel_name, const int nb_arg, ...);
@@ -56,10 +61,13 @@
 # include <OpenCL/opencl.h>
 
 # define MAX_SOURCE_SIZE	(0x100000)
+# define MAX_ERR_LOG		(10000)
 # define CL_FILENAME		"srcs/CL/hello.cl"
 # define CL_CC_FLAGS		"-I. -cl-mad-enable -cl-fast-relaxed-math"
+# define CL_DEVICE			CL_DEVICE_TYPE_ALL
 # define MAX_KERNEL_ARGS	5
 # define ARGS_FLAGS			CL_MEM_READ_WRITE
+# define DEFAULT_THREADS	(WIN_H * WIN_W)
 
 typedef struct			s_arg
 {
@@ -74,6 +82,7 @@ typedef struct			s_cl
 	cl_command_queue	command_queue;
 	cl_program			program;
 	cl_kernel			kernel;
+	cl_device_id		device_id;
 	cl_mem				variables[MAX_KERNEL_ARGS + 1];
 }						t_cl;
 
