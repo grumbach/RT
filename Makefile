@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2017/06/21 05:44:33 by agrumbac         ###   ########.fr        #
+#    Updated: 2017/06/27 19:52:23 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME = rtv1
 
-SRC = rt.c cl.c
+SRC = rt.c cl.c sdl.c errors.c
 
 SRCDIR = srcs/C/
 

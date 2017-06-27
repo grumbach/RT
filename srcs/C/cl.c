@@ -6,24 +6,11 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/27 00:17:53 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/27 20:01:03 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-static void			cl_error_log(t_cl *cl, const cl_int error_code)
-{
-	char		log[MAX_ERR_LOG];
-
-	ft_bzero(&log, sizeof(log));
-	ft_putstr_fd("error code : ", 2);
-	ft_putnbr_fd(error_code, 2);
-	ft_putstr_fd("\n", 2);
-	clGetProgramBuildInfo(cl->program, cl->device_id, \
-		CL_PROGRAM_BUILD_LOG, MAX_ERR_LOG, &log, NULL);
-	ft_putendl_fd(log, 2);
-}
 
 void				cl_init(t_cl *cl, const char *kernel_name)
 {
@@ -32,7 +19,7 @@ void				cl_init(t_cl *cl, const char *kernel_name)
 	char				source_str[MAX_SOURCE_SIZE];
 	const char			*source_str_ptr = source_str;
 
-	if ((ret = open(CL_FILENAME, O_RDONLY)) == -1) ||
+	if ((ret = open(CL_FILENAME, O_RDONLY)) == -1 || \
 		(source_size = read(ret, &source_str, MAX_SOURCE_SIZE)) == -1)
 		errors(0, 0);
 	close(ret);
@@ -77,9 +64,22 @@ static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 			errors(1, "clSetKernelArg failure --");
 }
 
+static void			cl_release_old(t_cl *cl)
+{
+	int				i;
+
+	i = 0;
+	while (cl->variables[i])
+	{
+		if (clReleaseMemObject(cl->variables[i]))
+			errors(1, "clRelease failure --");
+		cl->variables[i] = NULL;
+		i++;
+	}
+}
+
 void				cl_start(t_cl *cl, const int nb_arg, ...)
 {
-	cl_int		ret;
 	t_arg		arg[MAX_KERNEL_ARGS];
 	va_list		ap;
 	int			i;
@@ -91,6 +91,8 @@ void				cl_start(t_cl *cl, const int nb_arg, ...)
 	while (++i < nb_arg)
 		arg[i] = va_arg(ap, t_arg);
 	va_end(ap);
+	if (cl->variables[0])
+		cl_release_old(cl);
 	cl_start_args(cl, arg, nb_arg);
 	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, 1, NULL, \
 		&cl->work_size, NULL, 0, NULL, NULL))
