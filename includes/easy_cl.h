@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:54:05 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 11:58:07 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 12:06:10 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,14 @@ typedef struct			s_cl
 ** *****************************************************************************
 */
 
-void		cl_init(t_cl *cl, const char *kernel_name);
-void		cl_run(t_cl *cl, const int nb_arg, ...);
-void		cl_end(t_cl *cl);
+void					cl_init(t_cl *cl, const char *kernel_name);
+void					cl_run(t_cl *cl, const int nb_arg, ...);
+void					cl_end(t_cl *cl);
 
 /*
 ** ********************************** errors ***********************************
 */
 
-void		cl_error_log(t_cl *cl, const cl_int error_code);
+void					cl_error_log(t_cl *cl, const cl_int error_code);
 
 #endif

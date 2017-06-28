@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 11:49:39 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 12:36:06 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static void	main_loop(t_cl *cl, t_sdl *sdl)
 	loop = EVENT_UPDATE;
 	while (loop)
 	{
-		loop = sdl_events(sdl);
 		if (loop == EVENT_UPDATE)
 		{
 			cl->work_size[0] = sdl->size.y;// TODO optimize this
@@ -29,6 +28,7 @@ static void	main_loop(t_cl *cl, t_sdl *sdl)
 					sizeof(uint32_t) * sdl->size.y * sdl->size.x});
 			sdl_run(sdl);
 		}
+		loop = sdl_events(sdl);
 	}
 }
 

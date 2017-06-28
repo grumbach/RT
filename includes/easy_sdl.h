@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:55:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 11:56:24 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 12:06:25 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ typedef struct			s_sdl
 	uint32_t			*pixels;
 }						t_sdl;
 
-void		sdl_init(t_sdl *sdl, const char *window_name);
-void		sdl_run(t_sdl *sdl);
-void		sdl_end(t_sdl *sdl);
-int			sdl_events(t_sdl *sdl);
+void					sdl_init(t_sdl *sdl, const char *window_name);
+void					sdl_run(t_sdl *sdl);
+void					sdl_end(t_sdl *sdl);
+int						sdl_events(t_sdl *sdl);
 
 #endif
