@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:54:05 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 12:06:10 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 13:49:11 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,6 @@
 ** MAX_ERR_LOG		max size in bytes of error log
 ** CL_FILENAME		relative path to [.cl file] containing __kernel func
 ** CL_CC_FLAGS		[.cl file] compilation flags (can be NULL)
-** ARGS_FLAGS 		arg properties (same for all args)
-** 		CL_MEM_READ_WRITE
-** 		CL_MEM_WRITE_ONLY
-** 		CL_MEM_READ_ONLY
 ** CL_DEVICE		device used
 **		CL_DEVICE_TYPE_GPU
 ** 		CL_DEVICE_TYPE_CPU
@@ -40,7 +36,6 @@
 # define MAX_ERR_LOG		(10000)
 # define CL_FILENAME		"srcs/CL/rt.cl"
 # define CL_CC_FLAGS		"-I. -Isrcs/CL -cl-mad-enable -cl-fast-relaxed-math"
-# define ARGS_FLAGS			CL_MEM_READ_WRITE
 # define CL_DEVICE			CL_DEVICE_TYPE_ALL
 # define MAX_KERNEL_ARGS	5
 # define WORK_DIM			2
@@ -49,6 +44,7 @@ typedef struct			s_arg
 {
 	void				*ptr;
 	size_t				size;
+	cl_mem_flags		flag;
 }						t_arg;
 
 typedef struct			s_cl
@@ -67,10 +63,15 @@ typedef struct			s_cl
 ** void		cl_init(t_cl *cl);
 ** 					initialize cl program
 ** void		cl_run(t_cl *cl, const char *kernel_name, const int nb_arg, ...);
-**					args of type (t_arg){void*, size_t}; ie:
-** 					cl_run(cl, "my_kern_func", 1, (t_arg){ptr, 1024});
 ** 					call __kernel function in [.cl file] with arguments:
-** 					__kernel void kernel_name(__global ...)
+** 						__kernel void kernel_name(__global ...)
+**					args of type (t_arg){void*, size_t, cl_mem_flags}
+** 					for example : cl_run(cl, "my_kern_func", 1, \
+** 						(t_arg){ptr, 1024, CL_MEM_READ_WRITE});
+**					for cl_mem_flags choose from :
+** 						CL_MEM_READ_WRITE			1
+** 						CL_MEM_WRITE_ONLY			2
+** 						CL_MEM_READ_ONLY			4
 ** void		cl_end(t_cl *cl);
 ** 					terminate and free all cl environment
 ** *****************************************************************************

@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 12:36:06 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 13:51:46 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ static void	main_loop(t_cl *cl, t_sdl *sdl)
 			cl->work_size[0] = sdl->size.y;// TODO optimize this
 			cl->work_size[1] = sdl->size.x;
 			cl_run(cl, 1, \
-				(t_arg){sdl->draw_surface->pixels, \
-					sizeof(uint32_t) * sdl->size.y * sdl->size.x});
+				(t_arg){sdl->draw_surface->pixels, sizeof(uint32_t) * \
+					sdl->size.y * sdl->size.x, CL_MEM_WRITE_ONLY});
 			sdl_run(sdl);
 		}
 		loop = sdl_events(sdl);

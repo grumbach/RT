@@ -25,7 +25,5 @@ __kernel void	core(__global int* pixels)
 	const t_yx	size = (t_yx){(int)get_global_size(GLOBAL_Y),
 								(int)get_global_size(GLOBAL_X)};
 
-	// printf("[y %d, x %d] -- ", pixel.y, pixel.x);
-	// printf("{y %d, x %d}\n", size.y, size.x);
 	put_pixel(pixels, pixel, size, 0xff00ffff);
 }
