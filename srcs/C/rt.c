@@ -6,36 +6,46 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/27 20:01:24 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 05:41:41 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
+static void	main_loop(t_cl *cl, t_sdl *sdl)
+{
+	while (1)
+	{
+		if (!sdl_events(sdl))
+			break ;
+		cl->work_size[0] = sdl->size.y;
+		cl->work_size[1] = sdl->size.x;
+
+
+		ft_printf("PIX = %s\n", sdl->draw_surface->pixels);
+
+
+		cl_start(cl, 1, \
+			(t_arg){sdl->draw_surface->pixels, sizeof(int) * sdl->size.y * sdl->size.x}
+				);
+		sdl_start(sdl);
+	}
+}
+
 int			main(void)
 {
 	t_cl	cl;
-	char	str[24];
+	t_sdl	sdl;
 
-	str[0] = 'N';
-	str[1] = 'o';
-	str[2] = 'n';
-	str[3] = 'o';
-	str[4] = '\0';
 	ft_bzero(&cl, sizeof(cl));
+	ft_bzero(&sdl, sizeof(sdl));
+
 	cl_init(&cl, "core");
-	cl_start(&cl, 1, (t_arg){&str, 24});
-	ft_printf("%s\n", str);
+	sdl_init(&sdl, PROGRAM_NAME);
 
-
-	str[0] = 'N';
-	str[1] = 'o';
-	str[2] = 'n';
-	str[3] = 'o';
-	str[4] = '\0';
-	cl_start(&cl, 1, (t_arg){&str, 24});
-	ft_printf("%s\n", str);
+	main_loop(&cl, &sdl);
 
 	cl_end(&cl);
-	return (0);
+	sdl_end(&sdl);
+	return (EXIT_SUCCESS);
 }

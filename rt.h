@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/27 19:57:28 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 05:01:46 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 # include <fcntl.h>
 # include <errno.h>
 
-# define WIN_H				1024
-# define WIN_W				640
+# define WIN_H				640
+# define WIN_W				1024
 
 /*
 ** ********************************** OpenCL ***********************************
@@ -34,16 +34,18 @@
 ** MAX_ERR_LOG		max size in bytes of error log
 ** CL_FILENAME		relative path to [.cl file] containing __kernel func
 ** CL_CC_FLAGS		[.cl file] compilation flags (can be NULL)
-** MAX_KERNEL_ARGS	max numbers of args passed to __kernel func
-** ARGS_FLAGS 		arg properties (same for all args) ie:
+** ARGS_FLAGS 		arg properties (same for all args)
 ** 		CL_MEM_READ_WRITE
-** 		CL_MEM_WRITE_ONLY	//not implemented yet
-** 		CL_MEM_READ_ONLY	//not implemented yet
+** 		CL_MEM_WRITE_ONLY
+** 		CL_MEM_READ_ONLY
 ** CL_DEVICE		device used
 **		CL_DEVICE_TYPE_GPU
 ** 		CL_DEVICE_TYPE_CPU
 ** 		CL_DEVICE_TYPE_ALL
-** DEFAULT_THREADS	default number of threads, pixel grid
+** MAX_KERNEL_ARGS	max numbers of args passed to __kernel func
+** WORK_DIM			number of dimentions (1, 2 or 3),
+** 					affects cl->work_size[WORK_DIM] : must be (size_t[WORK_DIM])
+** 					filled with size values for each dimentions
 **
 ** ********************************** functions ********************************
 ** void	cl_init(t_cl *cl);
@@ -62,12 +64,12 @@
 
 # define MAX_SOURCE_SIZE	(0x100000)
 # define MAX_ERR_LOG		(10000)
-# define CL_FILENAME		"srcs/CL/hello.cl"
-# define CL_CC_FLAGS		"-I. -cl-mad-enable -cl-fast-relaxed-math"
+# define CL_FILENAME		"srcs/CL/rt.cl"
+# define CL_CC_FLAGS		"-I. -Isrcs/CL -cl-mad-enable -cl-fast-relaxed-math"
+# define ARGS_FLAGS			CL_MEM_READ_WRITE
 # define CL_DEVICE			CL_DEVICE_TYPE_ALL
 # define MAX_KERNEL_ARGS	5
-# define ARGS_FLAGS			CL_MEM_READ_WRITE
-# define DEFAULT_THREADS	(WIN_H * WIN_W)
+# define WORK_DIM			2
 
 typedef struct			s_arg
 {
@@ -77,7 +79,7 @@ typedef struct			s_arg
 
 typedef struct			s_cl
 {
-	size_t				work_size;
+	size_t				work_size[WORK_DIM];
 	cl_context			context;
 	cl_command_queue	command_queue;
 	cl_program			program;
@@ -97,6 +99,26 @@ void		cl_end(t_cl *cl);
 # include <SDL.h>
 # include <SDL_image.h>
 # include <SDL_ttf.h>
+
+typedef struct			s_yx
+{
+	int					y;
+	int					x;
+}						t_yx;
+
+typedef struct			s_sdl
+{
+	SDL_Window			*window;
+	SDL_Surface			*screen;
+	SDL_Surface			*draw_surface;
+	SDL_Event			event;
+	t_yx				size;
+}						t_sdl;
+
+void		sdl_init(t_sdl *sdl, const char *window_name);
+void		sdl_start(t_sdl *sdl);
+void		sdl_end(t_sdl *sdl);
+int			sdl_events(t_sdl *sdl);
 
 /*
 ** ********************************** errors ***********************************

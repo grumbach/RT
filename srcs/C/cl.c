@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/27 20:01:03 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 03:08:04 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void				cl_init(t_cl *cl, const char *kernel_name)
 	ret ? errors(1, "clBuildProgram failure --") : 0;
 	cl->kernel = clCreateKernel(cl->program, kernel_name, &ret);
 	ret ? errors(1, "clCreateKernel failure --") : 0;
-	cl->work_size = DEFAULT_THREADS;
 }
 
 static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)
@@ -94,8 +93,8 @@ void				cl_start(t_cl *cl, const int nb_arg, ...)
 	if (cl->variables[0])
 		cl_release_old(cl);
 	cl_start_args(cl, arg, nb_arg);
-	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, 1, NULL, \
-		&cl->work_size, NULL, 0, NULL, NULL))
+	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, WORK_DIM, NULL, \
+		cl->work_size, NULL, 0, NULL, NULL))
 		errors(1, "clEnqueueNDRangeKernel failure --");
 	if (clFinish(cl->command_queue))
 		errors(1, "clFinish failure --");
