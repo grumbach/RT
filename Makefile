@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2017/06/27 19:52:23 by agrumbac         ###   ########.fr        #
+#    Updated: 2017/06/28 12:01:19 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,8 @@ OBJDIR = objs
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-DEP = libft/includes/libft.h rt.h
+DEP = libft/includes/libft.h includes/rt.h \
+	includes/easy_cl.h includes/easy_sdl.h
 
 CC = clang #/Users/agrumbac/.brew/bin/gcc-7
 
@@ -36,7 +37,7 @@ INCL_SDL = -I Frameworks/SDL2.framework/Headers/ \
 	-I Frameworks/SDL2_ttf.framework/Headers/ \
 	-I Frameworks/SDL2_image.framework/Headers/
 
-INCL = -Ilibft/includes -I. $(INCL_SDL)
+INCL = -Ilibft/includes -Iincludes $(INCL_SDL)
 
 FRAMEWORKS = -framework opencl -rpath @loader_path/frameworks/ \
 	-framework SDL2 -framework SDL2_ttf -framework SDL2_image -F ./Frameworks

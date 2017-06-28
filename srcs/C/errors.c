@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/27 00:20:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 00:23:48 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 11:12:56 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ long			errors(const int err, const char *comment)
 	else if (err == 1)
 		ft_putstr_fd("OpenCL failure\n", 2);
 	else if (err == 2)
-		ft_putstr_fd(SDL_GetError(), 2);
+		ft_putendl_fd(SDL_GetError(), 2);
 	exit(EXIT_FAILURE);
 	return (0);
 }

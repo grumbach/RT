@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 05:41:41 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/06/28 11:49:39 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 
 static void	main_loop(t_cl *cl, t_sdl *sdl)
 {
-	while (1)
+	int		loop;
+
+	loop = EVENT_UPDATE;
+	while (loop)
 	{
-		if (!sdl_events(sdl))
-			break ;
-		cl->work_size[0] = sdl->size.y;
-		cl->work_size[1] = sdl->size.x;
-
-
-		ft_printf("PIX = %s\n", sdl->draw_surface->pixels);
-
-
-		cl_start(cl, 1, \
-			(t_arg){sdl->draw_surface->pixels, sizeof(int) * sdl->size.y * sdl->size.x}
-				);
-		sdl_start(sdl);
+		loop = sdl_events(sdl);
+		if (loop == EVENT_UPDATE)
+		{
+			cl->work_size[0] = sdl->size.y;// TODO optimize this
+			cl->work_size[1] = sdl->size.x;
+			cl_run(cl, 1, \
+				(t_arg){sdl->draw_surface->pixels, \
+					sizeof(uint32_t) * sdl->size.y * sdl->size.x});
+			sdl_run(sdl);
+		}
 	}
 }
 

@@ -40,7 +40,7 @@ void				cl_init(t_cl *cl, const char *kernel_name)
 	ret ? errors(1, "clCreateKernel failure --") : 0;
 }
 
-static inline void	cl_start_args(t_cl *cl, const t_arg *arg, const int nb_arg)
+static inline void	cl_run_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 {
 	int			i;
 	cl_int		ret;
@@ -77,7 +77,7 @@ static void			cl_release_old(t_cl *cl)
 	}
 }
 
-void				cl_start(t_cl *cl, const int nb_arg, ...)
+void				cl_run(t_cl *cl, const int nb_arg, ...)
 {
 	t_arg		arg[MAX_KERNEL_ARGS];
 	va_list		ap;
@@ -85,14 +85,14 @@ void				cl_start(t_cl *cl, const int nb_arg, ...)
 
 	va_start(ap, nb_arg);
 	if (!nb_arg || nb_arg > MAX_KERNEL_ARGS)
-		errors(1, "cl_start: bad nb_arg --");
+		errors(1, "cl_run: bad nb_arg --");
 	i = -1;
 	while (++i < nb_arg)
 		arg[i] = va_arg(ap, t_arg);
 	va_end(ap);
 	if (cl->variables[0])
 		cl_release_old(cl);
-	cl_start_args(cl, arg, nb_arg);
+	cl_run_args(cl, arg, nb_arg);
 	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, WORK_DIM, NULL, \
 		cl->work_size, NULL, 0, NULL, NULL))
 		errors(1, "clEnqueueNDRangeKernel failure --");

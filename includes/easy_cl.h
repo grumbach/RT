@@ -1,32 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rt.h                                               :+:      :+:    :+:   */
+/*   easy_cl.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 05:01:46 by agrumbac         ###   ########.fr       */
+/*   Created: 2017/06/28 11:54:05 by agrumbac          #+#    #+#             */
+/*   Updated: 2017/06/28 11:58:07 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RT_H
-# define RT_H
-
-/*
-** ********************************** Global ***********************************
-*/
-
-# define PROGRAM_NAME		"rtv1"
-
-# include "libft.h"
-
-# include <math.h>
-# include <fcntl.h>
-# include <errno.h>
-
-# define WIN_H				640
-# define WIN_W				1024
+#ifndef EASY_CL_H
+# define EASY_CL_H
 
 /*
 ** ********************************** OpenCL ***********************************
@@ -46,17 +31,6 @@
 ** WORK_DIM			number of dimentions (1, 2 or 3),
 ** 					affects cl->work_size[WORK_DIM] : must be (size_t[WORK_DIM])
 ** 					filled with size values for each dimentions
-**
-** ********************************** functions ********************************
-** void	cl_init(t_cl *cl);
-** 					initialize cl program
-** void	cl_start(t_cl *cl, const char *kernel_name, const int nb_arg, ...);
-**					args of type (t_arg){void*, size_t}; ie:
-** 					cl_start(cl, "my_kern_func", 1, (t_arg){ptr, 1024});
-** 					call __kernel function in [.cl file] with arguments:
-** 					__kernel void kernel_name(__global ...)
-** void	cl_end(t_cl *cl);
-** 					terminate and free all cl environment
 ** *****************************************************************************
 */
 
@@ -88,47 +62,28 @@ typedef struct			s_cl
 	cl_mem				variables[MAX_KERNEL_ARGS + 1];
 }						t_cl;
 
-void		cl_init(t_cl *cl, const char *kernel_name);
-void		cl_start(t_cl *cl, const int nb_arg, ...);
-void		cl_end(t_cl *cl);
-
 /*
-** ********************************** SDL **************************************
+** ********************************** functions ********************************
+** void		cl_init(t_cl *cl);
+** 					initialize cl program
+** void		cl_run(t_cl *cl, const char *kernel_name, const int nb_arg, ...);
+**					args of type (t_arg){void*, size_t}; ie:
+** 					cl_run(cl, "my_kern_func", 1, (t_arg){ptr, 1024});
+** 					call __kernel function in [.cl file] with arguments:
+** 					__kernel void kernel_name(__global ...)
+** void		cl_end(t_cl *cl);
+** 					terminate and free all cl environment
+** *****************************************************************************
 */
 
-# include <SDL.h>
-# include <SDL_image.h>
-# include <SDL_ttf.h>
-
-typedef struct			s_yx
-{
-	int					y;
-	int					x;
-}						t_yx;
-
-typedef struct			s_sdl
-{
-	SDL_Window			*window;
-	SDL_Surface			*screen;
-	SDL_Surface			*draw_surface;
-	SDL_Event			event;
-	t_yx				size;
-}						t_sdl;
-
-void		sdl_init(t_sdl *sdl, const char *window_name);
-void		sdl_start(t_sdl *sdl);
-void		sdl_end(t_sdl *sdl);
-int			sdl_events(t_sdl *sdl);
+void		cl_init(t_cl *cl, const char *kernel_name);
+void		cl_run(t_cl *cl, const int nb_arg, ...);
+void		cl_end(t_cl *cl);
 
 /*
 ** ********************************** errors ***********************************
 */
 
 void		cl_error_log(t_cl *cl, const cl_int error_code);
-long		errors(const int err, const char *comment);
-
-/*
-** ********************************** RT ***************************************
-*/
 
 #endif
