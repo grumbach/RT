@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:54:05 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/07/09 09:49:23 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/09 10:02:25 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct			s_arg
 
 typedef struct			s_cl
 {
-	size_t				work_size[WORK_DIM];
 	cl_context			context;
 	cl_command_queue	command_queue;
 	cl_program			program;
@@ -67,11 +66,14 @@ typedef struct			s_cl
 ** 					args of type (t_arg){void*, size_t, cl_mem_flags}
 ** 					for example : cl_init(cl, 1, \
 ** 						(t_arg){ptr_const, 1024, 4});//will always be read-only
-** void		cl_run(t_cl *cl, const int nb_arg, ...);
+** void		cl_run(t_cl *cl, size_t work_size[WORK_DIM], const int nb_arg, ...);
 ** 					runs the __kernel function with the given nb_arg arguments
 ** 						and the const arguments from cl_init (if present)
+** 					work_size contains sizes for each WORK_DIM :
+** 						for example WORK_DIM 2 with image width and height
+** 						one thread (__kernel func) for each pixel
 **					args of type (t_arg){void*, size_t, cl_mem_flags}
-** 					for example : cl_run(cl, 1, \
+** 					use example : cl_run(cl, (size_t[2]){42, 42}, 1, \
 ** 						(t_arg){ptr, 1024, CL_MEM_READ_WRITE});
 **					for cl_mem_flags choose from :
 ** 						CL_MEM_READ_WRITE			1
@@ -83,7 +85,7 @@ typedef struct			s_cl
 */
 
 void					cl_init(t_cl *cl, const int nb_const, ...);
-void					cl_run(t_cl *cl, const int nb_arg, ...);
+void					cl_run(t_cl *cl, size_t work_size[WORK_DIM], const int nb_arg, ...);
 void					cl_end(t_cl *cl);
 
 /*

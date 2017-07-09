@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/07/09 09:27:51 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/09 09:54:19 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ static inline void	cl_run_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 			errors(ERR_CL, "clSetKernelArg failure --");
 }
 
-void				cl_run(t_cl *cl, const int nb_arg, ...)
+void				cl_run(t_cl *cl, size_t work_size[WORK_DIM], \
+						const int nb_arg, ...)
 {
 	t_arg		arg[MAX_KERNEL_ARGS];
 	va_list		ap;
@@ -117,7 +118,7 @@ void				cl_run(t_cl *cl, const int nb_arg, ...)
 	va_end(ap);
 	cl_run_args(cl, arg, nb_arg);
 	if (clEnqueueNDRangeKernel(cl->command_queue, cl->kernel, WORK_DIM, NULL, \
-		cl->work_size, NULL, 0, NULL, NULL))
+		work_size, NULL, 0, NULL, NULL))
 		errors(ERR_CL, "clEnqueueNDRangeKernel failure --");
 	if (clFinish(cl->command_queue))
 		errors(ERR_CL, "clFinish failure --");
