@@ -25,5 +25,5 @@ __kernel void	core(__global int* pixels)
 	const t_yx	size = (t_yx){(int)get_global_size(GLOBAL_Y),
 								(int)get_global_size(GLOBAL_X)};
 
-	put_pixel(pixels, pixel, size, 0xff00ffff);
+	put_pixel(pixels, pixel, size, (pixel.x * pixel.x * pixel.y * pixel.y));
 }

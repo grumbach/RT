@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:54:05 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 13:49:11 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/09 09:49:23 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 # define MAX_SOURCE_SIZE	(0x100000)
 # define MAX_ERR_LOG		(10000)
 # define CL_FILENAME		"srcs/CL/rt.cl"
+# define CL_KERNEL_NAME		"core"
 # define CL_CC_FLAGS		"-I. -Isrcs/CL -cl-mad-enable -cl-fast-relaxed-math"
 # define CL_DEVICE			CL_DEVICE_TYPE_ALL
 # define MAX_KERNEL_ARGS	5
@@ -56,17 +57,21 @@ typedef struct			s_cl
 	cl_kernel			kernel;
 	cl_device_id		device_id;
 	cl_mem				variables[MAX_KERNEL_ARGS + 1];
+	int					nb_const;
 }						t_cl;
 
 /*
 ** ********************************** functions ********************************
-** void		cl_init(t_cl *cl);
-** 					initialize cl program
-** void		cl_run(t_cl *cl, const char *kernel_name, const int nb_arg, ...);
-** 					call __kernel function in [.cl file] with arguments:
-** 						__kernel void kernel_name(__global ...)
+** void		cl_init(t_cl *cl, const int nb_const, ...);
+** 					initializes cl program, sets constant variables (optional)
+** 					args of type (t_arg){void*, size_t, cl_mem_flags}
+** 					for example : cl_init(cl, 1, \
+** 						(t_arg){ptr_const, 1024, 4});//will always be read-only
+** void		cl_run(t_cl *cl, const int nb_arg, ...);
+** 					runs the __kernel function with the given nb_arg arguments
+** 						and the const arguments from cl_init (if present)
 **					args of type (t_arg){void*, size_t, cl_mem_flags}
-** 					for example : cl_run(cl, "my_kern_func", 1, \
+** 					for example : cl_run(cl, 1, \
 ** 						(t_arg){ptr, 1024, CL_MEM_READ_WRITE});
 **					for cl_mem_flags choose from :
 ** 						CL_MEM_READ_WRITE			1
@@ -77,7 +82,7 @@ typedef struct			s_cl
 ** *****************************************************************************
 */
 
-void					cl_init(t_cl *cl, const char *kernel_name);
+void					cl_init(t_cl *cl, const int nb_const, ...);
 void					cl_run(t_cl *cl, const int nb_arg, ...);
 void					cl_end(t_cl *cl);
 

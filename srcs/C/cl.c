@@ -6,13 +6,13 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/21 02:25:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/07/02 00:45:03 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/09 09:27:51 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-void				cl_init(t_cl *cl, const char *kernel_name)
+static inline void	cl_init_program(t_cl *cl, const int nb_const)
 {
 	cl_int				ret;
 	ssize_t				source_size;
@@ -36,22 +36,38 @@ void				cl_init(t_cl *cl, const char *kernel_name)
 	ret = clBuildProgram(cl->program, 1, &cl->device_id, CL_CC_FLAGS, 0, 0);
 	ret ? cl_error_log(cl, ret) : 0;
 	ret ? errors(ERR_CL, "clBuildProgram failure --") : 0;
-	cl->kernel = clCreateKernel(cl->program, kernel_name, &ret);
+	cl->kernel = clCreateKernel(cl->program, CL_KERNEL_NAME, &ret);
 	ret ? errors(ERR_CL, "clCreateKernel failure --") : 0;
+	cl->nb_const = nb_const;
 }
 
-static void			cl_release_old(t_cl *cl)
+void				cl_init(t_cl *cl, const int nb_const, ...)
 {
-	int				i;
+	t_arg		arg[MAX_KERNEL_ARGS];
+	va_list		ap;
+	cl_int		ret;
+	int			i;
 
-	i = 0;
-	while (cl->variables[i])
+	cl_init_program(cl, nb_const);
+	if (0 > nb_const || nb_const > MAX_KERNEL_ARGS)
+		errors(ERR_CL, "cl_run: bad nb_arg --");
+	va_start(ap, nb_const);
+	i = -1;
+	while (++i < nb_const)
+		arg[i] = va_arg(ap, t_arg);
+	va_end(ap);
+	i = -1;
+	while (++i < nb_const)
 	{
-		if (clReleaseMemObject(cl->variables[i]))
-			errors(ERR_CL, "clRelease failure --");
-		cl->variables[i] = NULL;
-		i++;
+		cl->variables[i] = clCreateBuffer(cl->context, CL_MEM_READ_ONLY, \
+			arg[i].size, NULL, &ret);
+		ret ? errors(ERR_CL, "clCreateBuffer failure --") : 0;
 	}
+	i = -1;
+	while (++i < nb_const)
+		if (clEnqueueWriteBuffer(cl->command_queue, cl->variables[i], CL_TRUE, \
+			0, arg[i].size, arg[i].ptr, 0, NULL, NULL))
+			errors(ERR_CL, "clEnqueueWriteBuffer failure --");
 }
 
 static inline void	cl_run_args(t_cl *cl, const t_arg *arg, const int nb_arg)
@@ -59,24 +75,29 @@ static inline void	cl_run_args(t_cl *cl, const t_arg *arg, const int nb_arg)
 	int			i;
 	cl_int		ret;
 
-	if (cl->variables[0])
-		cl_release_old(cl);
-	i = -1;
-	while (++i < nb_arg)
+	i = cl->nb_const - 1;
+	while (cl->variables[++i])
+	{
+		if (clReleaseMemObject(cl->variables[i]))
+			errors(ERR_CL, "clRelease failure --");
+		cl->variables[i] = NULL;
+	}
+	i = cl->nb_const - 1;
+	while (++i < nb_arg + cl->nb_const)
 	{
 		cl->variables[i] = clCreateBuffer(cl->context, arg[i].flag, \
 			arg[i].size, NULL, &ret);
 		ret ? errors(ERR_CL, "clCreateBuffer failure --") : 0;
 	}
-	i = -1;
-	while (++i < nb_arg)
+	i = cl->nb_const - 1;
+	while (++i < nb_arg + cl->nb_const)
 		if ((arg[i].flag == CL_MEM_READ_WRITE || \
 			arg[i].flag == CL_MEM_READ_ONLY) && \
 			clEnqueueWriteBuffer(cl->command_queue, cl->variables[i], CL_TRUE, \
 			0, arg[i].size, arg[i].ptr, 0, NULL, NULL))
 			errors(ERR_CL, "clEnqueueWriteBuffer failure --");
 	i = -1;
-	while (++i < nb_arg)
+	while (++i < nb_arg + cl->nb_const)
 		if ((ret = clSetKernelArg(cl->kernel, i, 8, &cl->variables[i])))
 			errors(ERR_CL, "clSetKernelArg failure --");
 }
@@ -87,11 +108,11 @@ void				cl_run(t_cl *cl, const int nb_arg, ...)
 	va_list		ap;
 	int			i;
 
-	va_start(ap, nb_arg);
-	if (!nb_arg || nb_arg > MAX_KERNEL_ARGS)
+	if (1 > nb_arg || nb_arg > MAX_KERNEL_ARGS)
 		errors(ERR_CL, "cl_run: bad nb_arg --");
-	i = -1;
-	while (++i < nb_arg)
+	va_start(ap, nb_arg);
+	i = cl->nb_const - 1;
+	while (++i < nb_arg + cl->nb_const)
 		arg[i] = va_arg(ap, t_arg);
 	va_end(ap);
 	cl_run_args(cl, arg, nb_arg);
@@ -100,8 +121,8 @@ void				cl_run(t_cl *cl, const int nb_arg, ...)
 		errors(ERR_CL, "clEnqueueNDRangeKernel failure --");
 	if (clFinish(cl->command_queue))
 		errors(ERR_CL, "clFinish failure --");
-	i = -1;
-	while (++i < nb_arg)
+	i = cl->nb_const - 1;
+	while (++i < nb_arg + cl->nb_const)
 		if ((arg[i].flag == CL_MEM_READ_WRITE || \
 			arg[i].flag == CL_MEM_WRITE_ONLY) && \
 			clEnqueueReadBuffer(cl->command_queue, cl->variables[i], \
