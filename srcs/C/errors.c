@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/27 00:20:21 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 11:12:56 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/03 22:32:54 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,15 @@ long			errors(const int err, const char *comment)
 		ft_putstr_fd(comment, 2);
 		ft_putstr_fd(" ", 2);
 	}
-	if (err == 0)
+	if (err == ERR_SYS)
 		ft_putendl_fd(strerror(errno), 2);
-	else if (err == 1)
+	else if (err == ERR_CL)
 		ft_putstr_fd("OpenCL failure\n", 2);
-	else if (err == 2)
+	else if (err == ERR_SDL)
 		ft_putendl_fd(SDL_GetError(), 2);
+	else if (err == ERR_USAGE)
+		ft_putendl_fd("\nUsage :	"PROGRAM_NAME" scene.xml\n"\
+		"			"PROGRAM_NAME" "PROGRAM_CLIENT);
 	exit(EXIT_FAILURE);
 	return (0);
 }

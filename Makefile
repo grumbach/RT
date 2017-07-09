@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/25 11:36:26 by agrumbac          #+#    #+#              #
-#    Updated: 2017/06/28 12:01:19 by agrumbac         ###   ########.fr        #
+#    Updated: 2017/07/02 01:16:31 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME = rtv1
 
-SRC = rt.c cl.c sdl.c errors.c
+SRC = rt.c cl.c sdl.c socket.c errors.c
 
 SRCDIR = srcs/C/
 
@@ -23,7 +23,7 @@ OBJDIR = objs
 CFLAGS = -Wall -Wextra -Werror -g
 
 DEP = libft/includes/libft.h includes/rt.h \
-	includes/easy_cl.h includes/easy_sdl.h
+	includes/easy_cl.h includes/easy_sdl.h includes/easy_socket.h
 
 CC = clang #/Users/agrumbac/.brew/bin/gcc-7
 

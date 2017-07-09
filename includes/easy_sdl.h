@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:55:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/28 12:06:25 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/02 01:18:40 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include <SDL.h>
 # include <SDL_image.h>
 # include <SDL_ttf.h>
+# include <stdint.h>
 
 # define EVENT_STOP			0
 # define EVENT_IDLE			1
