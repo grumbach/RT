@@ -1,35 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rt.h.cl                                            :+:      :+:    :+:   */
+/*   vector.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/18 23:53:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/06/27 22:00:32 by agrumbac         ###   ########.fr       */
+/*   Created: 2017/07/10 15:47:51 by agrumbac          #+#    #+#             */
+/*   Updated: 2017/07/10 15:47:55 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RT_H_CL
-# define RT_H_CL
+#ifndef VECTOR_H_CL
+# define VECTOR_H_CL
 
-/*
-** ********************************** geometry *********************************
-*/
-
-# include "vector.h.cl"
-
-/*
-** ********************************** data *************************************
-*/
-
-# define GLOBAL_X	1
-# define GLOBAL_Y	0
-
-typedef struct			s_yx
+typedef struct		s_vector
 {
-	int					y;
-	int					x;
-}						t_yx;
+	int				x;
+	int				y;
+	int				z;
+}					t_vector;
+
+t_vector			vector_plus(t_vector a, t_vector b);
+t_vector			vector_minus(t_vector a, t_vector b);
+t_vector			vector_mult(t_vector a, t_vector b);
+t_vector			vector_div(t_vector a, t_vector b);
+
+int					vector_dot(t_vector a, t_vector b);
+t_vector			vector_cross(t_vector a, t_vector b);
 
 #endif
