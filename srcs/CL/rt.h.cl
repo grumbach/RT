@@ -32,4 +32,16 @@ typedef struct			s_yx
 	int					x;
 }						t_yx;
 
+typedef union 			s_color
+{
+	unsigned int		color;
+	struct				s_c
+	{
+		unsigned char	r;
+		unsigned char	g;
+		unsigned char	b;
+		unsigned char	a;
+	}					c;
+}						t_color;
+
 #endif

@@ -24,6 +24,11 @@ __kernel void	core(__global int* pixels)
 								(int)get_global_id(GLOBAL_X)};
 	const t_yx	size = (t_yx){(int)get_global_size(GLOBAL_Y),
 								(int)get_global_size(GLOBAL_X)};
+	t_color		color;
 
-	put_pixel(pixels, pixel, size, (pixel.x * pixel.x * pixel.y * pixel.y));
+	color.c.a = 0xff;
+	color.c.r = (pixel.x / (float)size.x) * 0xff;
+	color.c.g = (pixel.y / (float)size.y) * 0xff;
+	color.c.b = 0xf;
+	put_pixel(pixels, pixel, size, color.color);
 }
