@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/28 11:55:45 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/07/02 01:18:40 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/12 13:08:40 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@
 ** 					draw sdl->pixels to sdl->screen of sdl->window
 ** void		cl_end(t_cl *cl);
 ** 					terminate and free all sdl environment
-** int		sdl_events(t_sdl *sdl);
-** 					fetch sdl events returns a status from :
-** 					EVENT_STOP, EVENT_IDLE, EVENT_UPDATE
+**
+** void		sdl_init_window(t_sdl *sdl);
+** 					initializes window, use in case of resize event
 ** *****************************************************************************
 */
 
@@ -34,10 +34,6 @@
 # include <SDL_image.h>
 # include <SDL_ttf.h>
 # include <stdint.h>
-
-# define EVENT_STOP			0
-# define EVENT_IDLE			1
-# define EVENT_UPDATE		2
 
 # define BPP				32
 
@@ -60,6 +56,7 @@ typedef struct			s_sdl
 void					sdl_init(t_sdl *sdl, const char *window_name);
 void					sdl_run(t_sdl *sdl);
 void					sdl_end(t_sdl *sdl);
-int						sdl_events(t_sdl *sdl);
+
+void					sdl_init_window(t_sdl *sdl);
 
 #endif

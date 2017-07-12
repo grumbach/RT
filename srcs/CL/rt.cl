@@ -22,14 +22,12 @@ static void		put_pixel(__global uint* pixels, \
 
 static uint		get_color(const void *obj, const t_ray ray)
 {
-	t_color		color;
-
 	if (hit_sphere(obj, &ray))
 		return (0xff00ff00);
-	return (0);
+	return (0xff0000ff);
 }
 
-static t_ray	get_ray(const t_cam *cam, const float s, const float t)
+static t_ray	get_ray(__constant t_cam *cam, const float s, const float t)
 {
 	float		theta = cam->fov * M_PI / 180;
 	float		half_height = tan(theta / 2);
@@ -42,16 +40,16 @@ static t_ray	get_ray(const t_cam *cam, const float s, const float t)
 		s * (2 * half_width * u) + t * (2 * half_height * v) - cam->origin});
 }
 
-__kernel void	core(__global uint* pixels)
+__kernel void	core(__global uint* pixels, __constant t_cam *cam)
 {
 	const t_yx	pixel = (t_yx){(int)get_global_id(GLOBAL_Y), \
 								(int)get_global_id(GLOBAL_X)};
 	const t_yx	size = (t_yx){(int)get_global_size(GLOBAL_Y),
 								(int)get_global_size(GLOBAL_X)};
-	const t_cam	cam = (t_cam){(t_vector){0, 0, 0}, (t_vector){0, 0, -1}, \
-		(t_vector){0, 1, 0}, 90, size.x / (float)size.y};
-	const t_sphere obj = (t_sphere){(t_vector){0, 0, -1}, 0.5};//tmp
+	const t_sphere obj = (t_sphere){(t_vector){0, 0, -10}, 0.5};//tmp
 
-	put_pixel(pixels, pixel, size, get_color(&obj, get_ray(&cam, \
+	if (!pixel.x && !pixel.y)
+		printf("(%f)\n", cam->origin.z);
+	put_pixel(pixels, pixel, size, get_color(&obj, get_ray(cam, \
 		pixel.x / (float)size.x, pixel.y / (float)size.y)));
 }

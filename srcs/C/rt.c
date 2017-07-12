@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/18 23:52:41 by agrumbac          #+#    #+#             */
-/*   Updated: 2017/07/09 10:02:41 by agrumbac         ###   ########.fr       */
+/*   Updated: 2017/07/12 15:07:19 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,23 @@
 
 static void	main_loop(t_cl *cl, t_sdl *sdl)
 {
+	t_cam	cam;
 	int		loop;
 
+	cam = (t_cam){(t_vector){0, 0, 0}, (t_vector){0, 0, -1}, \
+		(t_vector){0, 1, 0}, 90, sdl->size.x / (float)sdl->size.y};
 	loop = EVENT_UPDATE;
 	while (loop)
 	{
 		if (loop == EVENT_UPDATE)
 		{
-			cl_run(cl, (size_t[WORK_DIM]){sdl->size.y, sdl->size.x}, 1, \
+			cl_run(cl, (size_t[WORK_DIM]){sdl->size.y, sdl->size.x}, 2, \
 				(t_arg){sdl->draw_surface->pixels, sizeof(uint32_t) * \
-					sdl->size.y * sdl->size.x, CL_MEM_WRITE_ONLY});
+					sdl->size.y * sdl->size.x, CL_MEM_WRITE_ONLY}, \
+				(t_arg){&cam, 100, CL_MEM_READ_ONLY});
 			sdl_run(sdl);
 		}
-		loop = sdl_events(sdl);
+		loop = sdl_events(sdl, &cam);
 	}
 }
 
