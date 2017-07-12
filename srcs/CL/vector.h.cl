@@ -13,19 +13,8 @@
 #ifndef VECTOR_H_CL
 # define VECTOR_H_CL
 
-typedef struct		s_vector
-{
-	int				x;
-	int				y;
-	int				z;
-}					t_vector;
+typedef float3		t_vector;
 
-t_vector			vector_plus(t_vector a, t_vector b);
-t_vector			vector_minus(t_vector a, t_vector b);
-t_vector			vector_mult(t_vector a, t_vector b);
-t_vector			vector_div(t_vector a, t_vector b);
-
-int					vector_dot(t_vector a, t_vector b);
-t_vector			vector_cross(t_vector a, t_vector b);
+t_vector			unit_vector(const t_vector v);
 
 #endif
