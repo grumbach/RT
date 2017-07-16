@@ -31,9 +31,16 @@ typedef struct		s_sphere
 
 typedef struct		s_plane
 {
-	t_vector		u;
-	t_vector		v;
+	t_vector		point;
+	t_vector		normal;
 }					t_plane;
+
+typedef struct		s_cone
+{
+	t_vector		tip;
+	t_vector		axis;
+	float			angle;
+}					t_cone;
 
 typedef struct		s_triangle
 {
@@ -56,10 +63,17 @@ typedef struct			s_ray
 ** ********************************** hit **************************************
 */
 
-int			hit_sphere(const void *sphere, const t_ray *ray);
-int			hit_plane(const void *plane, const t_ray *ray);
-int			hit_triangle(const void *triangle, const t_ray *ray);
-int			hit_cone(const void *cone, const t_ray *ray);
-int			hit_cylinder(const void *cylinder, const t_ray *ray);
+typedef struct			s_hit
+{
+	float				t;
+	t_vector			point;
+	t_vector			normal;
+}						t_hit;
+
+int			hit_sphere(const void *sphere, const t_ray *ray, t_hit *record);
+int			hit_plane(const void *plane, const t_ray *ray, t_hit *record);
+int			hit_cone(const void *cone, const t_ray *ray, t_hit *record);
+int			hit_cylinder(const void *cylinder, const t_ray *ray, t_hit *record);
+int			hit_triangle(const void *triangle, const t_ray *ray, t_hit *record);
 
 #endif

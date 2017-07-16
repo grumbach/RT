@@ -16,3 +16,8 @@ t_vector			unit_vector(const t_vector v)
 {
 	return (v / length(v));
 }
+
+t_vector			vector(const t_vector a, const t_vector b)
+{
+	return ((t_vector){b.x - a.x, b.y - a.y, b.z - a.z});
+}

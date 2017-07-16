@@ -16,5 +16,6 @@
 typedef float3		t_vector;
 
 t_vector			unit_vector(const t_vector v);
+t_vector			vector(const t_vector a, const t_vector b);
 
 #endif

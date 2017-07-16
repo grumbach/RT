@@ -22,9 +22,17 @@ static void		put_pixel(__global uint* pixels, \
 
 static uint		get_color(const void *obj, const t_ray ray)
 {
-	if (hit_sphere(obj, &ray))
-		return (0xff00ff00);
-	return (0xff0000ff);
+	t_color		color;
+	t_hit		record;
+
+	color.color = 0xffaaaaaa;
+	if (hit_sphere(obj, &ray, &record))
+	{
+		color.c.r = (0.5 * (record.normal.x + 1)) * 0xff;
+		color.c.g = (0.5 * (record.normal.y + 1)) * 0xff;
+		color.c.b = (0.5 * (record.normal.z + 1)) * 0xff;
+	}
+	return (color.color);
 }
 
 static t_ray	get_ray(__constant t_cam *cam, const float s, const float t)
@@ -44,12 +52,11 @@ __kernel void	core(__global uint* pixels, __constant t_cam *cam)
 {
 	const t_yx	pixel = (t_yx){(int)get_global_id(GLOBAL_Y), \
 								(int)get_global_id(GLOBAL_X)};
-	const t_yx	size = (t_yx){(int)get_global_size(GLOBAL_Y),
+	const t_yx	size = (t_yx){(int)get_global_size(GLOBAL_Y), \
 								(int)get_global_size(GLOBAL_X)};
-	const t_sphere obj = (t_sphere){(t_vector){0, 0, -10}, 0.5};//tmp
+	const t_sphere obj = (t_sphere){(t_vector){0, 0, -1}, 0.5};//tmp
+	// const t_cone obj = (t_cone){(t_vector){0, 0, -100}, (t_vector){0, 0, -0.5}, 0.5};
 
-	if (!pixel.x && !pixel.y)
-		printf("(%f)\n", cam->origin.z);
 	put_pixel(pixels, pixel, size, get_color(&obj, get_ray(cam, \
 		pixel.x / (float)size.x, pixel.y / (float)size.y)));
 }
